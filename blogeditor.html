@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Blog Post Create</title>
+        <link rel="stylesheet" href="blogeditor.css">
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
+        <link href='https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css' rel='stylesheet' type='text/css' />
+    </head>
+    <body>
+        <header>
+            <div class="nav container">
+                <a href="#" class="logo">Editor</a>
+                <div class="nav-right">
+                    <a href="#" class="write-blog">
+                        <i class="ri-edit-box-line"></i>
+                        <span>Write</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <section class="post-create container">
+            <input type="text" name="" id="" placeholder="Blog Title" />
+            <div id="froala-editor-container"></div>
+            <div class="post-btns">
+                <a href="#" class="write-blog draft">
+                        <i class="ri-edit-box-line"></i>
+                        <span>Draft</span>
+                </a>
+                <a href="#" class="publish">Publish</a>
+            </div>
+        </section>
+                <script type='text/javascript' src='https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js'></script>
+                <script>var editor = new FroalaEditor("#froala-editor-container");</script>
+                <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+                <script>
+                    const SUPABASE_URL = "https://glpxpwfydzlteiatfxme.supabase.co";
+                    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdscHhwd2Z5ZHpsdGVpYXRmeG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxMzk3OTEsImV4cCI6MjA3MjcxNTc5MX0.BZI2KYCh6rKMsKxBcOjO_uzYLntySLPYZpgiyxJOn_4";
+                    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                </script>
+                <script>
+                    const titleInput = document.querySelector("input[placeholder='Blog Title']");
+                    const editorContent = () => document.querySelector(".fr-element").innerHTML;
+
+                        async function savePost(status) {
+                        const { data, error } = await supabase
+                        .from("posts")
+                        .insert([
+                        { 
+                        title: titleInput.value, 
+                        content: editorContent(), 
+                        status: status 
+                        }
+                        ]);
+
+                        if (error) {
+                        alert("Error: " + error.message);
+                        } else {
+                        alert("Post saved as " + status);
+                        }
+                        }
+
+                    document.querySelector(".draft").addEventListener("click", () => savePost("draft"));
+                    document.querySelector(".publish").addEventListener("click", () => savePost("publish"));
+                </script>
+
+    </body>
+</html>

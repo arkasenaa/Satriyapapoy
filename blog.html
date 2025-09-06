@@ -204,6 +204,42 @@
                 </div>
             </div>
         </main>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<script>
+  			const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
+  			const SUPABASE_ANON_KEY = "YOUR_ANON_KEY";
+  			const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  			async function loadPosts() {
+    			const { data: posts, error } = await supabase
+      			.from("posts")
+      			.select("*")
+      			.eq("status", "publish")  // hanya ambil yang publish
+      			.order("created_at", { ascending: false });
+
+    			if (error) {
+      				console.error("Error loading posts:", error);
+      			return;
+    			}
+
+    			const container = document.querySelector(".main-content-left");
+    			container.innerHTML = ""; // kosongkan dulu
+
+    				posts.forEach(post => {
+      					const div = document.createElement("div");
+      				div.className = "Frame-33";
+      				div.innerHTML = `
+        				<div class="article-content">
+          					<h2>${post.title}</h2>
+          					<p>${post.content.substring(0, 150)}...</p>
+        					</div>
+      					`;
+      			container.appendChild(div);
+    			});
+  			}
+
+  			loadPosts();
+		</script>
     </body>
     <script>
         // Dapatkan semua elemen dengan kelas 'Frame-33'
